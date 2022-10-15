@@ -24,7 +24,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner</a>
+      <li class="navbar-brand" ><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner</li>
     </div>
     <ul class="nav navbar-nav">
       <li class="active"><a href="regestry/regestry.php"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Registrarse</a></li>
@@ -53,6 +53,7 @@
 
 	?>
 
+<script type="text/javascript" src="login.js"></script>
 
 </body>
 </html>

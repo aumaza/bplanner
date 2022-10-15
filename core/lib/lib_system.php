@@ -11,6 +11,7 @@ function skeleton(){
 		<link rel="stylesheet" href="/bplanner/skeleton/css/bootstrap-theme.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/bootstrap-theme.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/scrolling-nav.css" >
+		<link rel="stylesheet" href="/bplanner/core/main/main.css" >
 			
 		<link rel="stylesheet" href="/bplanner/skeleton/Chart.js/Chart.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/Chart.js/Chart.css" >
@@ -63,8 +64,10 @@ function formLogIn(){
 
 		echo '<div class="container">
 					<div class="jumbotron">
+					<h1><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner</h1>
+					<p>Ingrese sus datos</p><hr>
   
-				   <form action="index.php" method="POST">
+				   <form id="fr_login_ajax" method="POST">
 				    <div class="form-group">
 				      <label for="email">Usuario:</label>
 				      <input type="email" class="form-control" id="user" name="user" placeholder="Ingrese su email">
@@ -72,15 +75,73 @@ function formLogIn(){
 				    <div class="form-group">
 				      <label for="pwd">Password:</label>
 				      <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Ingrese su password">
-				    </div>
+				    </div><br>
 				    
-				    <button type="submit" class="btn btn-primary btn-block" name="login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Ingresar</button>
-				    <button type="reset" class="btn btn-warning btn-block"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Limpiar</button>
+				    <div class="alert alert-info">
+					    <button type="submit" class="btn btn-default btn-block" id="login" name="login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Ingresar</button>
+					    <button type="reset" class="btn btn-default btn-block"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Limpiar Formulario</button>
+				    </div>
 				  </form><hr>
 				  
+				  <div id="messageLogIn"></div>
+
 				</div>
 				</div>';
 
+}
+
+
+/*
+** Funcion de validación de ingreso
+*/
+function logIn($user,$pass,$conn,$db_basename){
+
+    mysqli_select_db($conn,$db_basename);
+    
+	$_SESSION['user'] = $user;
+	$_SESSION['pass'] = $pass;
+	
+	$sql_1 = "select password from bp_usuarios where user = '$user'";
+	$query_1 = mysqli_query($conn,$sql_1);
+	while($row = mysqli_fetch_array($query_1)){
+        $hash = $row['password'];
+	}
+	
+    
+    
+	$sql = "SELECT * FROM bp_usuarios where user = '$user' and role = 1";
+	$q = mysqli_query($conn,$sql);
+	
+	$query = "SELECT * FROM bp_usuarios where user = '$user' and role = 0";
+	$retval = mysqli_query($conn,$query);
+	
+	
+	
+	if(!$q && !$retval){	
+			echo 7; // CONNECTION FAILURE
+			
+			}
+		
+			if(($user = mysqli_fetch_assoc($retval)) && (password_verify($pass,$hash))){
+				
+
+				echo -1; // USER BLOCK
+			}
+
+			else if(($user = mysqli_fetch_assoc($q)) && (password_verify($pass,$hash))){
+
+				if(strcmp($_SESSION["user"], 'root@gmail') == 0){
+
+					echo 1; // LOGIN SUCCESSFULLY
+				
+				
+			}else{
+				echo 1; // LOGIN SUCESSFULLY
+				
+			}
+			}else{
+				echo 2; // USER OR PASSWORD INCORRECT
+				}
 }
 
 
@@ -93,6 +154,19 @@ function flyerConnFailure(){
 				    	<p>Sin Conexión a la Base de Datos. Contactese con el Administrador.</p>
 				    </div><hr>
 				  </div>';
+
+}
+
+
+function logOut($nombre){
+    
+    echo '<div class="container"> 
+    			<div class="jumbotron">
+                <h1 align=center>Hasta Luego '.$nombre.'</h1><hr>
+                <p align=center><img src="logout.gif"  class="img-reponsive img-rounded"></p><hr>
+                <meta http-equiv="refresh" content="4;URL=../../logout.php "/>
+            </div>
+            </div>';
 
 }
 

@@ -1,5 +1,5 @@
 <?php	include "../connection/connection.php";
-		include "../core/lib/li_system.php";
+		include "../core/lib/lib_system.php";
 		include "lib_regestry.php";
 
 		if($conn){
@@ -10,7 +10,7 @@
 			$email = mysqli_real_escape_string($conn,$_POST['email']);
 			$celular = mysqli_real_escape_string($conn,$_POST['celular']);
 			$task = mysqli_real_escape_string($conn,$_POST['tasks']);
-			$file = $file = basename($_FILES["my_file"]["name"]);
+			$file = basename($_FILES["my_file"]["name"]);
 			$password_1 = mysqli_real_escape_string($conn,$_POST['pwd_1']);
 			$password_2 = mysqli_real_escape_string($conn,$_POST['pwd_2']);
 
