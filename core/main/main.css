@@ -22,3 +22,9 @@ resize: vertical;
 font-size: 2vw; 
 min-height:100px;   
 }
+
+.jumbotron{
+border-style: solid;
+border-color: #34495e;
+border-width: medium;
+}

@@ -12,19 +12,17 @@
 			$require = mysqli_real_escape_string($conn,$_POST['require']);
 			$date_from = mysqli_real_escape_string($conn,$_POST['date_from']);
 			$date_to = mysqli_real_escape_string($conn,$_POST['date_to']);
-			$state = mysqli_real_escape_string($conn,$_POST['state']);
-
+			
 				if(($nro_ticket == '') ||
 					($date_ticket == '') ||
 						($module == '') ||
 							($taker == '') ||
 								($require == '') ||
 									($date_from == '') ||
-										($date_to == '') ||
-											($state == '')){
+										($date_to == '')){
 					echo 5; // HAY CAMPOS SIN COMPLETAR
 				}else{
-					$oneTask->addTicket($oneTask,$nro_ticket,$date_ticket,$module,$taker,$require,$date_from,$date_to,$state,$conn,$db_basename);
+					$oneTask->addTicket($oneTask,$nro_ticket,$date_ticket,$module,$taker,$require,$date_from,$date_to,$conn,$db_basename);
 				}
 
 		}else{

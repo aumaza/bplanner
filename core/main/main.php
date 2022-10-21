@@ -7,6 +7,7 @@
 		include "../lib/lib_system.php";
 		include "../users/lib_user.php";
 		include "../tasks/lib_tasks.php";
+		include "../tasks/lib_ticket_track.php";
 		include "lib_main.php";
 
 		$varsession = $_SESSION['user'];
@@ -94,6 +95,7 @@
 
 		// ========================================================== //
 		// TASKS SPACE //
+			
 			$oneTask = new Tasks();
 
 			if(isset($_POST['tickets'])){
@@ -110,7 +112,24 @@
 				$id = mysqli_real_escape_string($conn,$_POST['id']);
 				$oneTask->formDeleteTicket($oneTask,$id,$conn,$db_basename);
 			}
+			if(isset($_POST['extended_info'])){
+				$id = mysqli_real_escape_string($conn,$_POST['id']);
+				$oneTask->formExtendedInfo($oneTask,$id,$conn,$db_basename);
+			}
 
+		// ========================================================== //
+		// TASKS TRACKER SPACE //
+
+			$oneTicketTrack = new TicketTrack();
+
+			if(isset($_POST['forwards'])){
+				$id_ticket = mysqli_real_escape_string($conn,$_POST['id']);
+				$oneTicketTrack->listTicketTrack($oneTicketTrack,$id_ticket,$conn,$db_basename);
+			}
+			if(isset($_POST['new_track'])){
+				$id_ticket = mysqli_real_escape_string($conn,$_POST['id_ticket']);
+				$oneTicketTrack->formNewTrack($id_ticket,$conn,$db_basename);
+			}
 
 
 
@@ -125,6 +144,7 @@
 <script type="text/javascript" src="lib_main.js"></script>
 <script type="text/javascript" src="../users/lib_user.js"></script>
 <script type="text/javascript" src="../tasks/lib_tasks.js"></script>
+<script type="text/javascript" src="../tasks/lib_ticket_track.js"></script>
 
 </body>
 </html>

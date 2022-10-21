@@ -9,7 +9,7 @@ $(document).ready(function(){
         
         const formData = new FormData(form);
         const values = [...formData.entries()];
-        console.log(values);
+        //console.log(values);
         
         formData.append('user', user.value);
         formData.append('password', password.value);
@@ -29,6 +29,8 @@ $(document).ready(function(){
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Bienvenido, aguarde un instante...</p></div>`;
                     document.getElementById('messageLogIn').innerHTML = mensaje;
+                     $('#user').val('');
+                     $('#pwd').val('');
                     //console.log(values);
                     setTimeout(function() { location.href="core/main/main.php" }, 4000);
                     }else if(r == -1){

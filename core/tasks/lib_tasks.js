@@ -90,8 +90,7 @@ $(document).ready(function(){
         const request = document.querySelector('#require');
         const date_from = document.querySelector('#date_from');
         const date_to = document.querySelector('#date_to');
-        const state = document.querySelector('#state');
-
+        
         const formData = new FormData(form);
         const values = [...formData.entries()];
         console.log(values);
@@ -103,8 +102,6 @@ $(document).ready(function(){
         formData.append('request', request.value);
         formData.append('date_from', date_from.value);
         formData.append('date_to', date_to.value);
-        formData.append('state', state.value);
-        
                
          jQuery.ajax({
             type:"POST",
@@ -129,7 +126,6 @@ $(document).ready(function(){
                      $('#require').val('');
                      $('#date_from').val('');
                      $('#date_to').val('');
-                     $('#state').val('');
                      $('#nro_ticket').focus();
                     setTimeout(function() { $(".close").click(); }, 4000);
                     }
@@ -146,7 +142,6 @@ $(document).ready(function(){
                         $('#require').val('');
                         $('#date_from').val('');
                         $('#date_to').val('');
-                        $('#state').val('');
                         $('#nro_ticket').focus();
                         setTimeout(function() { $(".close").click(); }, 4000);
                     }
@@ -163,7 +158,6 @@ $(document).ready(function(){
                         $('#require').val('');
                         $('#date_from').val('');
                         $('#date_to').val('');
-                        $('#state').val('');
                         $('#nro_ticket').focus();
                         setTimeout(function() { $(".close").click(); }, 4000);
                     }

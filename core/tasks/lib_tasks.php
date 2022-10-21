@@ -141,10 +141,11 @@ class Tasks{
                     echo "<td align=center>".$oneTask->getRequire($fila['request'])."</td>";
                     echo "<td align=center>".$oneTask->getDateFrom($fila['f_from'])."</td>";
                     echo "<td align=center>".$oneTask->getDateTo($fila['f_to'])."</td>";
+                    
                     if($oneTask->getState($fila['status']) == 'Ingresado'){
                     	echo "<td align=center style='background-color: #aed6f1'>".$oneTask->getState($fila['status'])."</td>";
                 	}
-                	if($oneTask->getState($file['status']) == 'Desarrollo'){
+                	if($oneTask->getState($fila['status']) == 'Desarrollo'){
                 		echo "<td align=center style='background-color: #d2b4de'>".$oneTask->getState($fila['status'])."</td>";
                 	}
                 	if($oneTask->getState($fila['status']) == 'Testing'){
@@ -153,7 +154,7 @@ class Tasks{
                 	if($oneTask->getState($fila['status']) == 'Rechazado'){
                 		echo "<td align=center style='background-color: #c0392b'>".$oneTask->getState($fila['status'])."</td>";
                 	}
-                	if($oneTask->getState($file['status']) == 'Aprobado'){
+                	if($oneTask->getState($fila['status']) == 'Aprobado'){
                 		echo "<td align=center style='background-color: #52be80'>".$oneTask->getState($fila['status'])."</td>";
                 	}
                     
@@ -171,6 +172,9 @@ class Tasks{
                                 <button type="submit" class="btn btn-default btn-sm" name="forwards" data-toggle="tooltip" data-placement="top" title="Ver y agregar avances al Ticket">
                                 	<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Avances</button>
                                 
+                                <button type="submit" class="btn btn-default btn-sm" name="extended_info" data-toggle="tooltip" data-placement="top" title="Ver Información Extendida del Ticket">
+                                	<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Información Extendida</button>
+
                         </form>';
                     
                     
@@ -256,18 +260,8 @@ public function formNewTicket($conn,$db_basename){
 			      <div class="form-group">
 			        <label for="date_to">Fecha Hasta:</label>
 			        <input type="date" class="form-control" id="date_to" name="date_to">
-			      </div>
-			       <div class="form-group">
-			        <label for="state">Estado:</label>
-			        <select class="form-control" id="state" name="state">
-			          <option value="" disabled selected>Seleccionar</option>
-			          <option value="1">Ingresado</option>
-			          <option value="2">Desarrollo</option>
-			          <option value="3">Testing</option>
-			          <option value="4">Rechazado</option>
-			          <option value="5">Aprobado</option>
-			        </select>
 			      </div><br>
+
 			      
 			      <div class="alert alert-info">
 			      	<button type="submit" class="btn btn-default btn-block" id="new_ticket"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Guardar</button>
@@ -419,13 +413,97 @@ public function formDeleteTicket($oneTask,$id,$conn,$db_basename){
 } // END OF FUNCTION
 
 
+/*
+** FORM EXTENDED INFO
+*/
+public function formExtendedInfo($oneTask,$id,$conn,$db_basename){
+
+	mysqli_select_db($conn,$db_basename);
+	// DATOS PRINCIPALES DEL TICKET
+	$sql = "select * from bp_ticket where id = '$id'";
+	$query = mysqli_query($conn,$sql);
+	$row = mysqli_fetch_assoc($query);
+
+	// DATOS DE LOS AVANCES
+	$sql_1 = "select * from bp_ticket_track where id_ticket = '$id'";
+	$query_1 = mysqli_query($conn,$sql_1);
+
+	// SE OBTIENE EL DIRECTORIO DEL TICKET
+	$sql_2 = "select files_path from bp_ticket_track where id_ticket = '$id'";
+	$query_2 = mysqli_query($conn,$sql_2);
+	$row_2 = mysqli_fetch_assoc($query_2);
+
+	$path = $row_2['files_path'];
+
+	if($filehandle = opendir($path)){
+
+        $list = array();
+        $count = 0;
+    
+        while($file = readdir($filehandle)){
+
+            if($file != "." && $file != ".."){
+            
+                $list[] = $file;
+                $count++;
+            }
+        }
+    }
+	
+
+	echo '<div class="container">
+			<div class="jumbotron">
+			  <h2><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Información Extendida del Ticket Nro.: 
+			  		<span class="badge">'.$oneTask->getNroTicket($row['nro_ticket']).'</span></h2><hr>
+			  <ul class="list-group">
+			    <li class="list-group-item active">Fecha Solicitud <span class="badge">'.$oneTask->getDateTicket($row['f_income']).'</span></li>
+			    <li class="list-group-item">Modulo <span class="badge">'.$oneTask->getModule($row['module']).'</span></li>
+			    <li class="list-group-item">Tomador <span class="badge">'.$oneTask->getTaker($row['owner']).'</span></li>
+			    <li class="list-group-item">Requerimiento <span class="badge">'.$oneTask->getRequire($row['request']).'</span></li>
+			    <li class="list-group-item">Fecha Entrega <span class="badge">'.$oneTask->getDateTo($row['f_to']).'</span></li>
+			    <li class="list-group-item">Estado <span class="badge">'.$oneTask->getState($row['status']).'</span></li>
+			  </ul><hr><br>
+
+			  <h2><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Archivos Suplementarios </h2><hr>
+
+			  	<div class="list-group">';
+                        
+                        for($i = 0; $i < $count; $i++){
+                            echo '<a class="list-group-item" href="../tasks/download_file.php?file_name='.$list[$i].'&path='.$path.'" >'.($i+1). ' - ' .$list[$i].'</a>';
+                        }       
+                        
+          echo '</div>
+          		<div class="panel-footer"><strong>Cantidad de Archivos Suplementarios:</strong> <span class="badge">'.$count.'</span></div><hr><br>
+
+
+			  
+			  <h2><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Avances del Ticket</h2><hr>';
+			  
+
+			  while($row_1 = mysqli_fetch_array($query_1)){
+			  
+			  echo '<div class="list-group">
+			    
+					    <li class="list-group-item active">Fecha Avance <span class="badge">'.$row_1['f_commit'].'</span></li>
+					    <li class="list-group-item">Descripción Avance <span class="badge">'.$row_1['commit'].'</span></li>
+					    <li class="list-group-item">Cantidad Horas <span class="badge">'.$row_1['cant_hours'].'</span></li>
+
+					</div>';
+			}
+			  
+			  
+  echo '</div>
+		</div>';
+
+} // END OF FUNCTION
+
 // =================================================================================================================================== //
 // PERSISTENCE
 
 /*
 ** FUNCTION ADD TASK TO DATABASE
 */
-public function addTicket($oneTask,$nro_ticket,$date_ticket,$module,$taker,$require,$date_from,$date_to,$state,$conn,$db_basename){
+public function addTicket($oneTask,$nro_ticket,$date_ticket,$module,$taker,$require,$date_from,$date_to,$conn,$db_basename){
 
 	mysqli_select_db($conn,$db_basename);
 	$sql = "select * from bp_ticket where nro_ticket = '$nro_ticket'";
@@ -433,6 +511,8 @@ public function addTicket($oneTask,$nro_ticket,$date_ticket,$module,$taker,$requ
 	$rows = mysqli_num_rows($query);
 
 	if($rows == 0){
+
+		$state = 1;
 
 		$sql_1 = "insert into bp_ticket".
 					"(nro_ticket,f_income,module,owner,request,f_from,f_to,status)".
