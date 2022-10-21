@@ -1,0 +1,10 @@
+#tabla bp_ticket_track
+create table bp_ticket_track(
+id int(11) auto_increment primary key,
+id_ticket varchar(6) not null,
+f_commit date not null,
+cant_hours int(11) not null,
+amount float(8,2) not null,
+commit varchar(600) not null,
+files_path varchar(100)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
