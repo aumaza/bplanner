@@ -39,7 +39,9 @@ function mainNavBar($nombre,$avatar){
 								<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Calcular Horas Mes</button></li>';
 
 							    if($nombre === 'Administrador'){
-							        echo '<li><button type="submit" class="btn btn-default btn-block" name="users"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</button></li>';
+							       echo '<li><button type="submit" class="btn btn-default btn-block" name="users"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</button></li>
+
+							       	  <li><button type="submit" class="btn btn-default btn-block" name="clients"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Clientes</button></li>';
 							    }
 				    echo '</ul>
 				        </div>

@@ -10,6 +10,7 @@
 		include "../tasks/lib_ticket_track.php";
 		include "../projects/lib_projects.php";
 		include "../teams/lib_teams.php";
+		include "../clients/lib_clients.php";
 		include "lib_main.php";
 
 		$varsession = $_SESSION['user'];
@@ -181,6 +182,19 @@
 			$oneTeam->modalMemberErase();
 
 
+			// ========================================================== //
+			// CLIENTS SPACE //
+
+			$oneClient = new Clients();
+
+			if(isset($_POST['clients'])){
+				$oneClient->listClients($oneClient,$conn,$db_basename);
+			}
+			if(isset($_POST['add_client'])){
+				$oneClient->formAddClient($conn,$db_basename);
+			}
+
+
 	?>
 
   
@@ -194,6 +208,7 @@
 <script type="text/javascript" src="../tasks/lib_ticket_track.js"></script>
 <script type="text/javascript" src="../projects/lib_projects.js"></script>
 <script type="text/javascript" src="../teams/lib_teams.js"></script>
+<script type="text/javascript" src="../clients/lib_clients.js"></script>
 
 </body>
 </html>

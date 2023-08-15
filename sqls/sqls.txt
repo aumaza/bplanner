@@ -59,3 +59,21 @@ year varchar(4) not null,
 pay_status varchar(1) not null
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+# ====================================================== #
+
+# table bp_clients
+create table bp_clients(
+id int(11) auto_increment primary key,
+razon_social varchar(200) not null,
+responsable varchar(100) not null,
+direccion varchar(200) not null,
+localidad varchar(300) not null,
+provincia varchar(300) not null,
+pais varchar(300) not null,
+cod_postal varchar(50) not null,
+telefono varchar(20) not null,
+email varchar(35) not null,
+cuit_cuil varchar(11) not null,
+logo varchar(300),
+file_path varchar(300)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
