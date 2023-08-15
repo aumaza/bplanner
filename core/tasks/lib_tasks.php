@@ -96,18 +96,34 @@ class Tasks{
 	/*
 	** LIST OF TASKS
 	*/
-	public function listTaks($oneTask,$conn,$db_basename){
+	public function listTaks($oneTask,$nombre,$conn,$db_basename){
+
+		$fecha_actual = date('Y-m-d');
 
 		if($conn)
         {
-            $sql = "SELECT * FROM bp_ticket";
-                mysqli_select_db($conn,$db_basename);
-                $resultado = mysqli_query($conn,$sql);
+            if($nombre == 'Administrador'){
+
+	            $sql = "SELECT * FROM bp_ticket";
+	            mysqli_select_db($conn,$db_basename);
+	            $resultado = mysqli_query($conn,$sql);
+
+            }else{
+            	$sql = "SELECT * FROM bp_ticket where owner = '$nombre'";
+	            mysqli_select_db($conn,$db_basename);
+	            $resultado = mysqli_query($conn,$sql);
+            }
+
             //mostramos fila x fila
             $count = 0;
    echo '<div class="container-fluid">
 	      <div class="jumbotron">
-	      <h2><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Tickets</h2><hr>
+	      <h2>
+	      <footer class="container-fluid text-left">
+	      		<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Tickets
+	      </h2>
+	      </footer>
+	      <hr>
 
 	      <form action="#" method="POST">
                     
@@ -118,15 +134,15 @@ class Tasks{
           
    echo "<table class='table table-condensed table-hover' style='width:100%' id='ticketsTable'>";
    echo "<thead>
-         <th class='text-nowrap text-center'>Nro. Ticket</th>
-         <th class='text-nowrap text-center'>Fecha Solicitud</th>
-         <th class='text-nowrap text-center'>Modulo</th>
-         <th class='text-nowrap text-center'>Tomador</th>
-         <th class='text-nowrap text-center'>Requerimiento</th>
-         <th class='text-nowrap text-center'>Fecha Desde</th>
-         <th class='text-nowrap text-center'>Fecha Hasta</th>
-         <th class='text-nowrap text-center'>Estado</th>
-         <th class='text-nowrap text-center'>Acciones</th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Nro. Ticket</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Fecha Solicitud</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Modulo</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Tomador</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Requerimiento</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Fecha Desde</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Fecha Hasta</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Estado</span></th>
+         <th class='text-nowrap text-center'><span class='label label-warning'>Acciones</span></th>
          </thead>";
 
 
@@ -134,28 +150,35 @@ class Tasks{
                     // Listado normal
                     echo "<tr>";
                     
-                    echo "<td align=center>".$oneTask->getNroTicket($fila['nro_ticket'])."</td>";
-                    echo "<td align=center>".$oneTask->getDateTicket($fila['f_income'])."</td>";
+                    echo "<td align=center><span class='label label-info'>".$oneTask->getNroTicket($fila['nro_ticket'])."</span></td>";
+                    echo "<td align=center><span class='label label-default'>".$oneTask->getDateTicket($fila['f_income'])."</span></td>";
                     echo "<td align=center>".$oneTask->getModule($fila['module'])."</td>";
                     echo "<td align=center>".$oneTask->getTaker($fila['owner'])."</td>";
                     echo "<td align=center>".$oneTask->getRequire($fila['request'])."</td>";
-                    echo "<td align=center>".$oneTask->getDateFrom($fila['f_from'])."</td>";
-                    echo "<td align=center>".$oneTask->getDateTo($fila['f_to'])."</td>";
+                    echo "<td align=center><span class='label label-default'>".$oneTask->getDateFrom($fila['f_from'])."</span></td>";
+
+                    if($oneTask->getDateTo($fila['f_to']) == $fecha_actual){
+                    	echo "<td align=center data-toggle='tooltip' title='En fecha de entrega'><span class='label label-info'>".$oneTask->getDateTo($fila['f_to'])."</span></td>";
+                	}else if($oneTask->getDateTo($fila['f_to']) > $fecha_actual){
+                		echo "<td align=center data-toggle='tooltip' title='Aún queda plazo de entrega'><span class='label label-success'>".$oneTask->getDateTo($fila['f_to'])."</span></td>";
+                	}else if($oneTask->getDateTo($fila['f_to']) < $fecha_actual){
+                		echo "<td align=center data-toggle='tooltip' title='Plazo de entrega vencido'><span class='label label-danger'>".$oneTask->getDateTo($fila['f_to'])."</span></td>";
+                	}
                     
                     if($oneTask->getState($fila['status']) == 'Ingresado'){
-                    	echo "<td align=center style='background-color: #aed6f1'>".$oneTask->getState($fila['status'])."</td>";
+                    	echo "<td align=center><span class='label label-info'>".$oneTask->getState($fila['status'])."</span></td>";
                 	}
                 	if($oneTask->getState($fila['status']) == 'Desarrollo'){
-                		echo "<td align=center style='background-color: #d2b4de'>".$oneTask->getState($fila['status'])."</td>";
+                		echo "<td align=center><span class='label label-primary'>".$oneTask->getState($fila['status'])."</span></td>";
                 	}
                 	if($oneTask->getState($fila['status']) == 'Testing'){
-                		echo "<td align=center style='background-color: #f7dc6f'>".$oneTask->getState($fila['status'])."</td>";
+                		echo "<td align=center><span class='label label-warning'>".$oneTask->getState($fila['status'])."</span></td>";
                 	}
                 	if($oneTask->getState($fila['status']) == 'Rechazado'){
-                		echo "<td align=center style='background-color: #c0392b'>".$oneTask->getState($fila['status'])."</td>";
+                		echo "<td align=center><span class='label label-danger'>".$oneTask->getState($fila['status'])."</span></td>";
                 	}
                 	if($oneTask->getState($fila['status']) == 'Aprobado'){
-                		echo "<td align=center style='background-color: #52be80'>".$oneTask->getState($fila['status'])."</td>";
+                		echo "<td align=center><span class='label label-success'>".$oneTask->getState($fila['status'])."</span></td>";
                 	}
                     
                     echo "<td class='text-nowrap' align=center>";
@@ -185,7 +208,7 @@ class Tasks{
 
                 echo "</table>";
                 echo "<hr>";
-                echo '<div class="alert alert-info"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Tickets:</strong>  ' .$count.'</div><hr>';
+                echo '<footer class="container-fluid text-left"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Tickets:</strong>  <span class="badge">'.$count.'</span></footer><hr>';
                 echo '</div></div>';
                 }else{
                 echo 'Connection Failure...' .mysqli_error($conn);

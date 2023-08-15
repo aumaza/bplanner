@@ -11,13 +11,13 @@ function skeleton(){
 		<link rel="stylesheet" href="/bplanner/skeleton/css/bootstrap-theme.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/bootstrap-theme.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/scrolling-nav.css" >
+		<link rel="stylesheet" href="/bplanner/skeleton/css/font-awesome.min.css" >
 		<link rel="stylesheet" href="/bplanner/core/main/main.css" >
 			
 		<link rel="stylesheet" href="/bplanner/skeleton/Chart.js/Chart.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/Chart.js/Chart.css" >
 		
 		<link rel="stylesheet" href="/bplanner/skeleton/css/jquery.dataTables.min.css" >
-		<link rel="stylesheet" href="/bplanner/skeleton/dataTables/buttons.dataTables.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/buttons.dataTables.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/buttons.bootstrap.min.css" >
 		<link rel="stylesheet" href="/bplanner/skeleton/css/jquery.dataTables-1.11.5.min.css" >
@@ -168,6 +168,22 @@ function logOut($nombre){
             </div>
             </div>';
 
+}
+
+function home(){
+
+	echo '<div class="container"> 
+    			<div class="jumbotron">
+    			<footer class="container-fluid text-center">
+					  <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner
+					</footer><hr>
+                	<p align=center><img src="../img/DevOps-Infinity-Loop.png"  class="img-reponsive img-rounded" style="width:70%"></p><hr>
+                	
+                	<footer class="container-fluid text-center">
+					  Develop by <a href="mailto:develslack@gmail.com">Slackzone Development</a>
+					</footer>
+          		</div>
+            </div>';
 }
 
 

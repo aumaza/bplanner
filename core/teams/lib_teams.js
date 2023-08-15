@@ -1,8 +1,8 @@
-// ESTRUCTURA TABLE USUARIOS
+// ESTRUCTURA TABLE TEAMS
 
  $(document).ready(function(){
       
-      $('#usersTable').DataTable({
+      $('#teamsTable').DataTable({
         "order": [[0, "asc"]],
         "responsive":     true,
         "scrollY":        "300px",
@@ -16,19 +16,19 @@
             {
                 extend: 'excel',
                 text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar Excel',
-                messageTop: 'Listado de Usuarios',
+                messageTop: 'Miembros del Equipo',
                 exportOptions: { columns: ':visible',}
             },
             {
                 extend: 'csv',
                 text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar CSV',
-                messageTop: 'Listado de Usuarios',
+                messageTop: 'Miembros del Equipo',
                 exportOptions: { columns: ':visible',}
             },
             {
                 extend: 'pdf',
                 text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar PDF',
-                messageTop: 'Listado de Usuarios',
+                messageTop: 'Miembros del Equipo',
                 exportOptions: { columns: ':visible',}
             },
             {
@@ -43,7 +43,7 @@
                         .addClass( 'compact' )
                         .css( 'font-size', 'inherit' );
                 },
-                messageTop: 'Listado de Usuarios',
+                messageTop: 'Miembros del Equipo',
                 autoPrint: false,
                 exportOptions: {
                     columns: ':visible',
@@ -76,30 +76,167 @@
     });
 
 
- /*
- * * CAMBIAR PERMISOS DE USUARIOS
- */
+ // ========================================================================== //
+ // PERSISTENCIA
+
+// ADD MEMBER
 $(document).ready(function(){
-    $('#cambiar_permiso').click(function(){
-        var datos=$('#frm_user_allow').serialize();
-        $.ajax({
+    $('#new_member').click(function(){
+        
+        const form = document.querySelector('#fr_new_member_ajax');
+        
+        const id_project = document.querySelector('#id_project');
+        const member = document.querySelector('#member');
+        const functions = document.querySelector('#functions');
+        
+        const formData = new FormData(form);
+        const values = [...formData.entries()];
+        console.log(values);
+        
+        formData.append('id_project', id_project.value);
+        formData.append('member', member.value);
+        formData.append('functions', functions.value);
+               
+         jQuery.ajax({
             type:"POST",
-            url:"../users/cambiar_permiso_usuario.php",
-            data:datos,
+            method:"POST",
+            url:"../teams/new_member.php",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
             success:function(r){
-                if(r==1){
-                    alert("Permiso de Usuario Cambiado Exitosamente!!");
+                
+                if(r == 1){
+                    var mensaje = `<br><div class="alert alert-success alert-dismissible">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Registro Agregado Exitosamente.-</p></div>`;
+                    document.getElementById('messageNewMember').innerHTML = mensaje;
+                    console.log(values);
+                     $('#member').val('');
+                     $('#functions').val('');
+                     $('#member').focus();
+                    setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == -1){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Ocurrió un problema al intentar guardar el registro</p></div>`;
+                        document.getElementById('messageNewMember').innerHTML = mensaje;
+                        console.log(formData);
+                        $('#member').val('');
+                        $('#functions').val('');
+                        $('#member').focus();
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 5){
+                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Verifique los campos sin completar</p></div>`;
+                        document.getElementById('messageNewMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 7){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Sin conexion a la base de datos</p></div>`;
+                        document.getElementById('messageNewMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 9){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> El proyecto ya cuenta con dicho miembro</p></div>`;
+                        document.getElementById('messageNewMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
                     
-                    var form = $('<form action="#" method="post">' +
-                          '<input type="hidden" name="users" />' +
+            },
+            
+        });
+
+        return false;
+    });
+});
+
+
+// UPDATE MEMBER
+$(document).ready(function(){
+    $('#update_member').click(function(){
+        
+        const form = document.querySelector('#fr_update_member_ajax');
+        
+        const id_project = document.querySelector('#id_project');
+        const id = document.querySelector('#id');
+        const functions = document.querySelector('#functions');
+        
+        const formData = new FormData(form);
+        const values = [...formData.entries()];
+        console.log(values);
+        
+        formData.append('id_project', id_project.value);
+        formData.append('id', id.value);
+        formData.append('functions', functions.value);
+               
+         jQuery.ajax({
+            type:"POST",
+            method:"POST",
+            url:"../teams/update_member.php",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success:function(r){
+                
+                if(r == 1){
+                    var mensaje = `<br><div class="alert alert-success alert-dismissible">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Registro Actualizado Exitosamente.-</p></div>`;
+                    document.getElementById('messageUpdateMember').innerHTML = mensaje;
+                    console.log(values);
+                     
+                    setTimeout(function() { $(".close").click(); }, 4000);
+
+                        var form = $('<form action="#" method="post">' +
+                          '<input type="hidden" name="id" value="'+id_project.value+'"/>' +
+                          '<input type="hidden" name="team" />' +
                           '</form>');
                         $('body').append(form);
                         form.submit();
 
-                }else if(r==-1){
-                    alert("Hubo un problema al intentar cambiar el Permiso de Usuario");
-                }
-            }
+                    }
+                    else if(r == -1){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Ocurrió un problema al intentar actualizar el registro</p></div>`;
+                        document.getElementById('messageUpdateMember').innerHTML = mensaje;
+                        console.log(formData);
+                        
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 5){
+                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Verifique los campos sin completar</p></div>`;
+                        document.getElementById('messageUpdateMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 7){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Sin conexion a la base de datos</p></div>`;
+                        document.getElementById('messageUpdateMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    
+                    
+            },
+            
         });
 
         return false;
@@ -107,213 +244,88 @@ $(document).ready(function(){
 });
 
 
-/*
-** CALL MODAL CHANGE ALLOW USER
-*/
+
+// UPDATE MEMBER
+$(document).ready(function(){
+    $('#quitar_miembro').click(function(){
+        
+        const form = document.querySelector('#frm_quitar_miembro_ajax');
+        
+        const id = document.querySelector('#bookId');
+        
+        const formData = new FormData(form);
+        const values = [...formData.entries()];
+        console.log(values);
+        
+        formData.append('id', id.value);
+               
+         jQuery.ajax({
+            type:"POST",
+            method:"POST",
+            url:"../teams/delete_member.php",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success:function(r){
+                
+                if(r == 1){
+                    var mensaje = `<br><div class="alert alert-success alert-dismissible">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Registro Eliminado Exitosamente.-</p></div>`;
+                    document.getElementById('messageDeleteMember').innerHTML = mensaje;
+                    console.log(values);
+                     
+                        setTimeout(function() { $(".close").click(); }, 4000);
+
+                            var form = $('<form action="#" method="post">' +
+                              '<input type="hidden" name="projects" />' +
+                              '</form>');
+                            $('body').append(form);
+                            form.submit();
+                            
+
+                    }
+                    else if(r == -1){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Ocurrió un problema al intentar eliminar el registro</p></div>`;
+                        document.getElementById('messageDeleteMember').innerHTML = mensaje;
+                        console.log(formData);
+                        
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 5){
+                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Verifique los campos sin completar</p></div>`;
+                        document.getElementById('messageDeleteMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    else if(r == 7){
+                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Sin conexion a la base de datos</p></div>`;
+                        document.getElementById('messageDeleteMember').innerHTML = mensaje;
+                        console.log(formData);
+                        setTimeout(function() { $(".close").click(); }, 4000);
+                    }
+                    
+                    
+            },
+            
+        });
+
+        return false;
+    });
+});
+
+
 
 $(document).ready(function(e) {
-  $('#modalUserAllow').on('show.bs.modal', function(e) {
+  $('#modalMemberErase').on('show.bs.modal', function(e) {
     var id = $(e.relatedTarget).data().id;
     $(e.currentTarget).find('#bookId').val(id);
   });
-});
-
-
-// UPDATE USUARIO
-$(document).ready(function(){
-    $('#update_user').click(function(){
-        
-        const form = document.querySelector('#fr_update_user_ajax');
-        
-        const id = document.querySelector('#id');
-        const celular = document.querySelector('#celular');
-        const task = document.querySelector('#tasks');
-        const file = document.querySelector('#my_file');
-        
-        const formData = new FormData(form);
-        const values = [...formData.entries()];
-        console.log(values);
-        
-        formData.append('id', id.value);
-        formData.append('celular', celular.value);
-        formData.append('task', task.value);
-        formData.append('file', file.value[0]);
-        
-               
-         jQuery.ajax({
-            type:"POST",
-            method:"POST",
-            url:"../users/update_user.php",
-            data: formData,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success:function(r){
-                if(r == 1){
-                    var mensaje = `<br><div class="alert alert-success alert-dismissible">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Actualización Realizada Exitosamente</p></div>`;
-                    document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                    console.log(values);
-                    setTimeout(function() { $(".close").click(); }, 4000);
-                    }else if(r == -1){
-                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                            <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Ocurrió un problema al intentar actualizar el registro</p></div>`;
-                        document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 3){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> El directorio de destino no posee permisos de escritura [ CONTACTE AL ADMINISTRADOR ]</p></div>`;
-                        document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                        console.log(values);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 4){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Sólo se permiten archivos PNG y JPG</p></div>`;
-                        document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 5){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Verifique los campos sin completar</p></div>`;
-                        document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 7){
-                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Sin conexion a la base de datos</p></div>`;
-                        document.getElementById('messageUpdateUser').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    
-            },
-            
-        });
-
-        return false;
-    });
-});
-
-
-// UPDATE PASSWORD
-$(document).ready(function(){
-    $('#change_password').click(function(){
-        
-        const form = document.querySelector('#fr_change_password_ajax');
-        
-        const id = document.querySelector('#id');
-        const password_actual = document.querySelector('#password_actual');
-        const password_1 = document.querySelector('#pwd_1');
-        const password_2 = document.querySelector('#pwd_2');
-        
-        const formData = new FormData(form);
-        const values = [...formData.entries()];
-        console.log(values);
-        
-        formData.append('id', id.value);
-        formData.append('password_actual', password_actual.value);
-        formData.append('password_1', password_1.value);
-        formData.append('password_2', password_2.value);
-        
-               
-         jQuery.ajax({
-            type:"POST",
-            method:"POST",
-            url:"../users/update_password.php",
-            data: formData,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success:function(r){
-                if(r == 1){
-                    var mensaje = `<br><div class="alert alert-success alert-dismissible">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Actualización Realizada Exitosamente. Aguarde un Instante. El sistema le pedirá que ingrese nuevamente.-</p></div>`;
-                    document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                    console.log(values);
-                     $('#password_actual').val('');
-                     $('#pwd_1').val('');
-                     $('#pwd_2').val('');
-                     $('#password_actual').focus();
-                    setTimeout(function() { location.href="../../logout.php"; }, 4000);
-                    }else if(r == -1){
-                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                            <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Ocurrió un problema al intentar actualizar el registro</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(formData);
-                        $('#password_actual').val('');
-                        $('#pwd_1').val('');
-                        $('#pwd_2').val('');
-                        $('#password_actual').focus();
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 3){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> El password ingresado no coincide con el actual</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(values);
-                        $('#password_actual').val('');
-                        $('#pwd_1').val('');
-                        $('#pwd_2').val('');
-                        $('#password_actual').focus();
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 4){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Los Passwords no Coinciden</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(formData);
-                        $('#pwd_1').val('');
-                        $('#pwd_2').val('');
-                        $('#pwd_1').focus();
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 4){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Los Passwords deden tener entra 10 y 15 caracteres</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(formData);
-                        $('#pwd_1').val('');
-                        $('#pwd_2').val('');
-                        $('#password_actual').focus();
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 5){
-                        var mensaje = `<br><div class="alert alert-warning alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Verifique los campos sin completar</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    else if(r == 7){
-                        var mensaje = `<br><div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                            <p align=center><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Sin conexion a la base de datos</p></div>`;
-                        document.getElementById('messageUpdatePassword').innerHTML = mensaje;
-                        console.log(formData);
-                        setTimeout(function() { $(".close").click(); }, 4000);
-                    }
-                    
-            },
-            
-        });
-
-        return false;
-    });
 });

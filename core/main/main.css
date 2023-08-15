@@ -28,3 +28,10 @@ border-style: solid;
 border-color: #34495e;
 border-width: medium;
 }
+
+footer {
+background-color: #566573;
+color: white;
+padding: 10px;
+border-radius: 6px;
+}

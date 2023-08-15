@@ -98,7 +98,13 @@ public function listTicketTrack($oneTicketTrack,$id_ticket,$conn,$db_basename){
             $count = 0;
    echo '<div class="container-fluid">
 	      <div class="jumbotron">
-	      <h2><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Avances del Ticket '.$row['nro_ticket'].'</h2><hr>
+	      <h2>
+	      <footer class="container-fluid text-left">
+	      <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
+	       Avances del Ticket <span class="label label-success">'.$row['nro_ticket'].'</span>
+	      </h2>
+	      </footer>
+	      <hr>
 
 	      <form action="#" method="POST">
             <input type="hidden" id="id_ticket" name="id_ticket" value="'.$id_ticket.'">
@@ -110,11 +116,11 @@ public function listTicketTrack($oneTicketTrack,$id_ticket,$conn,$db_basename){
           
    echo "<table class='table table-condensed table-hover' style='width:100%' id='trackTable'>";
    echo "<thead>
-         <th class='text-nowrap text-center'>Fecha Avance</th>
-         <th class='text-nowrap text-center'>Avance</th>
-         <th class='text-nowrap text-center'>Cantidad Horas</th>
-         <th class='text-nowrap text-center'>Monto Parcial</th>
-         <th class='text-nowrap text-center'>Acciones</th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Fecha Avance</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Avance</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Cantidad Horas</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Monto Parcial</span></th>
+         <th class='text-nowrap text-center'><span class='label label-warning'>Acciones</span></th>
          </thead>";
 
 
@@ -122,15 +128,16 @@ public function listTicketTrack($oneTicketTrack,$id_ticket,$conn,$db_basename){
                     // Listado normal
                     echo "<tr>";
                     
-                    echo "<td align=center>".$oneTicketTrack->getDateCommit($fila['f_commit'])."</td>";
-                    echo "<td align=center>".$oneTicketTrack->getCommit($fila['commit'])."</td>";
-                    echo "<td align=center>".$oneTicketTrack->getCantHours($fila['cant_hours'])."</td>";
-                    echo "<td align=center>$".$oneTicketTrack->getAmount($fila['amount'])."</td>";
+                    echo "<td align=center><span class='label label-default'>".$oneTicketTrack->getDateCommit($fila['f_commit'])."</span></td>";
+                    echo "<td align=center><span class='label label-default'>".$oneTicketTrack->getCommit($fila['commit'])."</span></td>";
+                    echo "<td align=center><span class='label label-default'>".$oneTicketTrack->getCantHours($fila['cant_hours'])."</span></td>";
+                    echo "<td align=center><span class='label label-default'>$".$oneTicketTrack->getAmount($fila['amount'])."</span></td>";
                                        
                     echo "<td class='text-nowrap' align=center>";
 
                     echo '<form action="#" method="POST">
                                 <input type="hidden" id="id" name="id" value="'.$fila['id'].'" >
+                                <input type="hidden" id="id_ticket" name="id_ticket" value="'.$id_ticket.'">
                                 
                                 <button type="submit" class="btn btn-default btn-sm" name="edit_ticket_track" data-toggle="tooltip" data-placement="top" title="Editar Datos del Avance">
                                 	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar</button>
@@ -148,7 +155,7 @@ public function listTicketTrack($oneTicketTrack,$id_ticket,$conn,$db_basename){
 
                 echo "</table>";
                 echo "<hr>";
-                echo '<div class="alert alert-info"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Avances:</strong>  ' .$count.'</div><hr>';
+                echo '<footer class="container-fluid text-left"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Avances:</strong>  <span class="badge">'.$count.'</span></footer><hr>';
                 echo '</div></div>';
                 }else{
                 echo 'Connection Failure...' .mysqli_error($conn);
@@ -247,6 +254,140 @@ public function formNewTrack($id_ticket,$conn,$db_basename){
 		</div>';
 
 } // END OF FUNCTION
+
+
+/*
+** FORM FOR UPDATE TRACK
+*/
+public function formUpdateTrack($oneTicketTrack,$id_ticket,$id,$conn,$db_basename){
+
+	// CAPTURAMOS LOS DATOS DEL TICKET
+	mysqli_select_db($conn,$db_basename);
+	$sql = "select * from bp_ticket where id = '$id_ticket'";
+	$query = mysqli_query($conn,$sql);
+	$row = mysqli_fetch_assoc($query);
+	$nro_ticket = $row['nro_ticket'];
+
+	// SE BUSCA SI ES EL PRIMER AVANCE A GENERAR
+	$sql_1 = "select max(f_commit) as fecha from bp_ticket_track where id_ticket = '$id_ticket'";
+	$query_1 = mysqli_query($conn,$sql_1);
+	$row_1 = mysqli_fetch_assoc($query_1);
+
+	// SE LEVANTAN LOS DATOS DEL TRACK
+	$sql_2 = "select * from bp_ticket_track where id = '$id'";
+	$query_2 = mysqli_query($conn,$sql_2);
+	$row_2 = mysqli_fetch_assoc($query_2);
+
+	echo '<div class="container">
+		  <div class="jumbotron">
+		    <h2><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar Avance para el Ticket Nro.: <span class="badge">'.$nro_ticket.'</span></h2>      
+		    <p>Agregue los avances que considere necesarios a dicho ticket.</p><hr>';
+
+		    if($row_1['fecha'] == ''){
+
+			    echo '<div class="alert alert-success">
+				  		<marquee><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Aún no se han cargado avances para este Ticket.</marquee>
+					 </div><hr>';
+			}else if($row_1['fecha'] != ''){
+				echo '<div class="alert alert-warning">
+				  		<marquee><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> El último avance fué cargado la fecha: '.$row_1['fecha'].'</marquee>
+					 </div><hr>';
+			}
+		    
+	echo '<form id="fr_update_advance_ticket_ajax" method="POST" enctype="multipart/form-data">
+		     <input type="hidden" id="id_ticket" name="id_ticket" value="'.$id_ticket.'">
+		     <input type="hidden" id="nro_ticket" name="nro_ticket" value="'.$nro_ticket.'">
+		     <input type="hidden" id="id" name="id" value="'.$id.'">
+		      
+		     <div class="form-group">
+				 <label for="advance">Descripción Avance / Commit:</label>
+				  	<textarea class="form-control" rows="5" id="advance" name="advance" placeholder="Ingrese una explicación de los ajustes realizados">'.$oneTicketTrack->getCommit($row_2['commit']).'</textarea>
+			</div>
+		      
+		      <div class="form-group">
+		        <label for="cant_hours">Cantidad de Horas:</label>
+		        <input type="number" class="form-control" id="cant_hours" name="cant_hours" min="1" value="'.$oneTicketTrack->getCantHours($row_2['cant_hours']).'">
+		      </div><br>
+
+		      <div class="alert alert-info">
+				  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <strong>Importante</strong> Si posee archivos de imégenes como capturas de pantalla o documentación puede agregarlos al contenido, para facilitar la comprensión del avance en cuestión. Recuerde que esta información será de utilidad en el futuro.-
+			  </div>
+
+		      <div class="form-group">
+				<label for="my_file">Seleccione archivo:</label>
+	  			<input type="file" id="files" name="files[]" multiple="">
+  			  </div><br>
+
+  			  <div class="alert alert-info">
+				  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <strong>Información:</strong> El estado actual es: <span class="badge">'.$row['status'].'</span>
+			  </div>
+		      
+		      <div class="form-group">
+				<label for="state">Estado:</label>
+				<select class="form-control" id="state" name="state">
+				  <option value="" disabled selected>Seleccionar</option>
+				  <option value="1" '.($row['status'] == 'Ingresado' ? 'selected' : '').'>Ingresado</option>
+				  <option value="2" '.($row['status'] == 'Desarrollo' ? 'selected' : '').'>Desarrollo</option>
+				  <option value="3" '.($row['status'] == 'Testing' ? 'selected' : '').'>Testing</option>
+				  <option value="4" '.($row['status'] == 'Rechazado' ? 'selected' : '').'>Rechazado</option>
+				  <option value="5" '.($row['status'] == 'Aprobado' ? 'selected' : '').'>Aprobado</option>
+				</select>
+			 </div><br>
+		      
+		      
+			<div class="alert alert-info">
+		      <button type="submit" class="btn btn-default btn-block" id="update_advance"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Actualizar</button>
+		    </div>
+		    </form><hr>
+		    
+		    <div id="messageUpdateTrack"></div>
+		    
+		  </div>
+		        
+		</div>';
+
+} // END OF FUNCTION
+
+
+/*
+** FORM PARA CALCULO DE HORAS
+**
+*/
+public function calcHours($conn,$db_basename){
+
+	echo '<div class="container">
+			  <div class="jumbotron">
+			    <h2><span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Calcular Horas Mes</h2><hr>      
+			    <div class="alert alert-info" align="center">
+			    	Seleccione los datos sobre los cuales desea calcular las horas trabajadas por cada desarrollador
+			    </div><hr>
+
+			    <form action="/action_page.php">
+			    
+			    <div class="form-group">
+			      <label for="desarrollador">Desarrollador:</label>
+			      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+			    </div>
+			    
+			    <div class="form-group">
+			      <label for="fecha_desde">Fecha Desde:</label>
+			      <input type="date" class="form-control" id="fecha_desde" name="fecha_desde">
+			    </div>
+			    
+			    <div class="form-group">
+			      <label for="fecha_hasta">Fecha Hasta:</label>
+			      <input type="date" class="form-control" id="fecha_hasta" name="fecha_hasta">
+			    </div>
+			   
+			    <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Calcular</button>
+			  </form>
+			    
+			    
+			  </div>
+			       
+			</div>';
+
+}
 
 
 // ==================================================================================================================================================== //
@@ -398,6 +539,148 @@ public function addTicketTrack($oneTicketTrack,$id_ticket,$nro_ticket,$advance,$
 
 } // END OF FUNCTION
 
+
+/*
+** UPDATE ADVANCE TO DATABASE
+*/
+public function updateTicketTrack($oneTicketTrack,$id_ticket,$id,$nro_ticket,$advance,$cant_hours,$files,$state,$conn,$db_basename){
+
+	$actual_date = date("Y-m-d");
+	$valor_hora = 1300;
+
+	
+		$targetDir = '../trackers/'.$nro_ticket;
+		//$fileName = $file;
+		
+
+		if(!file_exists($targetDir)){
+
+			mkdir($targetDir);
+			chmod($targetDir,0777);
+
+			
+				foreach($_FILES['files']['tmp_name'] as $key => $tmp_name){
+
+					if($_FILES["files"]["name"][$key]){
+
+						$fileName = $_FILES['files']['name'][$key];
+						$source = $_FILES['files']['tmp_name'][$key];
+						$dir = opendir($targetDir);
+						$targetFilePath = $targetDir.'/'.$fileName;
+
+						$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
+
+						// Allow certain file formats
+						$allowTypes = array('png','jpg','doc','docx','odt','xls','xlsx','pdf');
+											    
+						    if(in_array($fileType, $allowTypes)){
+								
+						    	// Upload file to server
+						        move_uploaded_file($source, $targetFilePath);
+						        closedir($dir);
+		                            
+								
+							}else{
+								echo 4; // wrong format
+								break;
+							}
+					}
+				}
+
+				$cant_hours = intVal($cant_hours);
+				$amount = $cant_hours * $valor_hora;
+				$amount = floatVal($amount);
+
+				mysqli_select_db($conn,$db_basename);
+				$sql = "update bp_ticket_track set 
+						id_ticket = $oneTicketTrack->setIdTicket('$id_ticket'),
+						f_commit = $oneTicketTrack->setDateCommit('$actual_date'),
+						cant_hours = $oneTicketTrack->setCantHours('$cant_hours'),
+						amount = $oneTicketTrack->setAmount('$amount'),
+						commit = $oneTicketTrack->setCommit('$advance'),
+						files_path = $oneTicketTrack->setFilePath('$targetDir') where id = '$id'";
+				$query = mysqli_query($conn,$sql);
+
+					if($query){
+		                                    
+		                $sql_1 = "update bp_ticket set status = '$state' where id = '$id_ticket'";
+		                $query_1 = mysqli_query($conn,$sql_1);
+		                                    
+						if($query_1){
+							echo 1; // insert and update successfully
+						}else{
+							echo -2; // error when attemp udapte
+						}
+					}else{
+						echo -1; // there is an error when attempt insert
+					}
+				
+			
+
+		}else{
+			
+			//echo 10; // estoy aca
+			foreach($_FILES['files']['tmp_name'] as $key => $tmp_name){
+
+					if($_FILES["files"]["name"][$key]){
+
+						$fileName = $_FILES['files']['name'][$key];
+						$source = $_FILES['files']['tmp_name'][$key];
+						$dir = opendir($targetDir);
+						$targetFilePath = $targetDir.'/'.$fileName;
+
+						$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
+
+						// Allow certain file formats
+						$allowTypes = array('png','jpg','doc','docx','odt','xls','xlsx','pdf');
+											    
+						    if(in_array($fileType, $allowTypes)){
+								
+						    	// Upload file to server
+						        move_uploaded_file($source, $targetFilePath);
+						        closedir($dir);
+		                            
+								
+							}else{
+								echo 4; // wrong format
+								break;
+							}
+					}
+				}
+
+				$cant_hours = intVal($cant_hours);
+				$amount = $cant_hours * $valor_hora;
+				$amount = floatVal($amount);
+
+				mysqli_select_db($conn,$db_basename);
+				$sql = "update bp_ticket_track set 
+						id_ticket = $oneTicketTrack->setIdTicket('$id_ticket'),
+						f_commit = $oneTicketTrack->setDateCommit('$actual_date'),
+						cant_hours = $oneTicketTrack->setCantHours('$cant_hours'),
+						amount = $oneTicketTrack->setAmount('$amount'),
+						commit = $oneTicketTrack->setCommit('$advance'),
+						files_path = $oneTicketTrack->setFilePath('$targetDir') where id = '$id'";
+				$query = mysqli_query($conn,$sql);
+
+					if($query){
+		                                    
+		                $sql_1 = "update bp_ticket set status = '$state' where id = '$id_ticket'";
+		                $query_1 = mysqli_query($conn,$sql_1);
+		                                    
+						if($query_1){
+							echo 1; // insert and update successfully
+						}else{
+							echo -2; // error when attemp udapte
+						}
+					}else{
+						echo -1; // there is an error when attempt insert
+					}
+			
+		}
+
+	
+
+} // END OF FUNCTION
 
 
 

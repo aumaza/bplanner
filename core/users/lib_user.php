@@ -107,17 +107,21 @@ class User{
             $count = 0;
    echo '<div class="container-fluid">
 	      <div class="jumbotron">
-	      <h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</h2><hr>';
+	      <h2>
+	      <footer class="container-fluid text-left">
+	      <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</h2>
+	      </footer>
+	      <hr>';
           
    echo "<table class='table table-condensed table-hover' style='width:100%' id='usersTable'>";
    echo "<thead>
-         <th class='text-nowrap text-center'>Nombre</th>
-         <th class='text-nowrap text-center'>User</th>
-         <th class='text-nowrap text-center'>Email</th>
-         <th class='text-nowrap text-center'>Celular</th>
-         <th class='text-nowrap text-center'>Tareas</th>
-         <th class='text-nowrap text-center'>Permisos</th>
-         <th>&nbsp;</th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Nombre</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>User</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Email</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Celular</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Tareas</span></th>
+         <th class='text-nowrap text-center'><span class='label label-default'>Permisos</span></th>
+         <th class='text-nowrap text-center'><span class='label label-warning'>Acciones</span></th>
          </thead>";
 
 
@@ -126,18 +130,18 @@ class User{
                     echo "<tr>";
                     echo "<td align=center>".$oneUser->getName($fila['nombre'])."</td>";
                     echo "<td align=center>".$oneUser->getUser($fila['user'])."</td>";
-                    echo "<td align=center>".$oneUser->getEmail($fila['email'])."</td>";
+                    echo "<td align=center><a href='mailto:".$oneUser->getEmail($fila['email'])."'>".$oneUser->getEmail($fila['email'])."</a></td>";
                     echo "<td align=center>".$oneUser->getCelular($fila['celular'])."</td>";
                     echo "<td align=center>".$oneUser->getTask($fila['functions'])."</td>";
                     if($oneUser->getRole($fila['role']) == 1){
-                        echo "<td align=center style='background-color:#52be80'>".$enable."</td>";
+                        echo "<td align=center><span class='label label-success'>".$enable."</span></td>";
                     }else if($oneUser->getRole($fila['role']) == 0){
-                        echo "<td align=center style='background-color:#cd6155 '>".$disabled."</td>";
+                        echo "<td align=center><span class='label label-danger'>".$disabled."</span></td>";
                     }
-                    echo "<td class='text-nowrap'>";
+                    echo "<td class='text-nowrap' align=center>";
                     if($oneUser->getUser($fila['user']) != 'root@gmail.com'){
                             echo '<a data-toggle="modal" data-target="#modalUserAllow" href="#" data-id="'.$fila['id'].'" class="btn btn-default btn-sm">
-                                    <span class="glyphicon glyphicon-link"></span> Cambiar Permisos</a>';
+                                    <span class="glyphicon glyphicon-link"></span> Cambiar Estado</a>';
                     }
                     echo "</td>";
                     $count++;
@@ -145,7 +149,7 @@ class User{
 
                 echo "</table>";
                 echo "<hr>";
-                echo '<div class="alert alert-info"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Usuarios:</strong>  ' .$count.'</div><hr>';
+                echo '<footer class="container-fluid text-left"><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span> <strong>Cantidad de Usuarios:</strong>  <span class="badge">'.$count.'</span></footer><hr>';
                 echo '</div></div>';
                 }else{
                 echo 'Connection Failure...' .mysqli_error($conn);

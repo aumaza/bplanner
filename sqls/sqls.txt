@@ -8,3 +8,54 @@ amount float(8,2) not null,
 commit varchar(600) not null,
 files_path varchar(100)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+# table bp_projects
+create table bp_projects(
+id int(11) auto_increment primary key,
+project varchar(300) not null,
+client varchar(300) not null,
+project_leader varchar(150) not null,
+functional varchar(150) not null,
+technologies varchar(2000) not null,
+requeriments TEXT not null,
+status varchar(1) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+# table bp_teams
+create table bp_teams(
+id int(11) auto_increment primary key,
+id_project int(11) not null,
+member varchar(150) not null,
+function varchar(150) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+# table bp_hours
+create table bp_hours(
+id int(11) auto_increment primary key,
+name varchar(150) not null,
+fecha date not null,
+descripcion varchar(2000) not null,
+cant_hour varchar(3) not null,
+amount float(8,2) not null,
+ticket_number varchar(4) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+#table bp_pay_hours
+create table bp_pay_hours(
+id int(11) auto_increment primary key,
+name varchar(150) not null,
+cant_total_hours varchar(4) not null,
+total_amount float(8,2) not null,
+month varchar(11) not null,
+year varchar(4) not null,
+pay_status varchar(1) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

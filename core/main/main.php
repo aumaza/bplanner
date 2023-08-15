@@ -8,6 +8,8 @@
 		include "../users/lib_user.php";
 		include "../tasks/lib_tasks.php";
 		include "../tasks/lib_ticket_track.php";
+		include "../projects/lib_projects.php";
+		include "../teams/lib_teams.php";
 		include "lib_main.php";
 
 		$varsession = $_SESSION['user'];
@@ -74,6 +76,7 @@
 		// SYSTEM HOME
 			if(isset($_POST['home'])){
 				echo '<meta http-equiv="refresh" content="URL=main.php "/>';
+				home();
 			}
 
 		// ========================================================== //
@@ -99,7 +102,7 @@
 			$oneTask = new Tasks();
 
 			if(isset($_POST['tickets'])){
-				$oneTask->listTaks($oneTask,$conn,$db_basename);
+				$oneTask->listTaks($oneTask,$nombre,$conn,$db_basename);
 			}
 			if(isset($_POST['new_ticket'])){
 				$oneTask->formNewTicket($conn,$db_basename);
@@ -130,8 +133,52 @@
 				$id_ticket = mysqli_real_escape_string($conn,$_POST['id_ticket']);
 				$oneTicketTrack->formNewTrack($id_ticket,$conn,$db_basename);
 			}
+			if(isset($_POST['edit_ticket_track'])){
+				$id = mysqli_real_escape_string($conn,$_POST['id']);
+				$id_ticket = mysqli_real_escape_string($conn,$_POST['id_ticket']);
+				$oneTicketTrack->formUpdateTrack($oneTicketTrack,$id_ticket,$id,$conn,$db_basename);
+			}
+			if(isset($_POST['calcular_horas_mes'])){
+				$oneTicketTrack->calcHours($conn,$db_basename);
+			}
 
 
+		// ========================================================== //
+		// PROJECTS SPACE //
+
+			$oneProject = new Projects();
+
+			if(isset($_POST['projects'])){
+				$oneProject->listProjects($oneProject,$conn,$db_basename);
+			}
+			if(isset($_POST['new_project'])){
+				$oneProject->formAddProject($conn,$db_basename);
+			}
+			if(isset($_POST['edit_project'])){
+				$id = mysqli_real_escape_string($conn,$_POST['id']);
+				$oneProject->formEditProject($oneProject,$id,$conn,$db_basename);
+			}
+
+			// ========================================================== //
+			// PROJECTS SPACE //
+
+			$oneTeam = new Teams();
+
+			if(isset($_POST['team'])){
+				$id_project = mysqli_real_escape_string($conn,$_POST['id']);
+				$oneTeam->listTeams($oneTeam,$id_project,$conn,$db_basename);
+			}
+			if(isset($_POST['add_member'])){
+				$id_project = mysqli_real_escape_string($conn,$_POST['id_project']);	
+				$oneTeam->formAddMember($id_project,$conn,$db_basename);
+			}
+			if(isset($_POST['change_function'])){
+				$id = mysqli_real_escape_string($conn,$_POST['id']);
+				$id_project = mysqli_real_escape_string($conn,$_POST['id_project']);
+				$oneTeam->formEditMemberFunction($oneTeam,$id_project,$id,$conn,$db_basename);
+			}
+
+			$oneTeam->modalMemberErase();
 
 
 	?>
@@ -145,6 +192,8 @@
 <script type="text/javascript" src="../users/lib_user.js"></script>
 <script type="text/javascript" src="../tasks/lib_tasks.js"></script>
 <script type="text/javascript" src="../tasks/lib_ticket_track.js"></script>
+<script type="text/javascript" src="../projects/lib_projects.js"></script>
+<script type="text/javascript" src="../teams/lib_teams.js"></script>
 
 </body>
 </html>

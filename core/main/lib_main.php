@@ -19,7 +19,7 @@ function mainNavBar($nombre,$avatar){
 	echo '<nav class="navbar navbar-inverse">
 			  <div class="container-fluid">
 			    <div class="navbar-header">
-			      <li class="navbar-brand" data-toggle="tooltip" title="Backtrack Planner for Developers"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner</li>
+			      <li><button class="btn btn-success navbar-btn" data-toggle="tooltip" data-placement="top" title="BPlanner development tracker"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> BPlanner</button></li>
 			    </div>
 			    
 			    <div class="btn-group navbar-btn">
@@ -30,9 +30,13 @@ function mainNavBar($nombre,$avatar){
 				          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-toggle="tooltip" title="Menú Inicio">
 				          	<span class="glyphicon glyphicon-flash" aria-hidden="true"></span> Menú <span class="caret"></span></button>
 				          <ul class="dropdown-menu" role="menu">
+				            
+				          	<li><button type="submit" class="btn btn-default btn-block" name="projects"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Proyectos</button></li>
+
 				            <li><button type="submit" class="btn btn-default btn-block" name="tickets"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Tickets</button></li>
-							<li><button type="submit" class="btn btn-default btn-block" name="tickets_tracker"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Tickets Tracker</button></li>
-							<li><button type="submit" class="btn btn-default btn-block" name="">Page 1-3</button></li>';
+							
+							<li><button type="submit" class="btn btn-default btn-block" name="calcular_horas_mes">
+								<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Calcular Horas Mes</button></li>';
 
 							    if($nombre === 'Administrador'){
 							        echo '<li><button type="submit" class="btn btn-default btn-block" name="users"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</button></li>';

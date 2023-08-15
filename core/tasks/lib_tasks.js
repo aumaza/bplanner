@@ -15,25 +15,25 @@
             
             {
                 extend: 'excel',
-                text: 'Export Excel',
+                text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar Excel',
                 messageTop: 'Listado de Tickets',
                 exportOptions: { columns: ':visible',}
             },
             {
                 extend: 'csv',
-                text: 'Export CSV',
+                text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar CSV',
                 messageTop: 'Listado de Tickets',
                 exportOptions: { columns: ':visible',}
             },
             {
                 extend: 'pdf',
-                text: 'Export PDF',
+                text: '<span class="glyphicon glyphicon-save-file" aria-hidden="true"></span> Exportar PDF',
                 messageTop: 'Listado de Tickets',
                 exportOptions: { columns: ':visible',}
             },
             {
                 extend: 'print', 
-                text: 'Imprimir',
+                text: '<span class="glyphicon glyphicon-print" aria-hidden="true"></span> Imprimir',
                 customize: function ( win ) {
                     $(win.document.body)
                         .css( 'font-size', '8pt' );
