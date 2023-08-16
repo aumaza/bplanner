@@ -193,6 +193,10 @@
 			if(isset($_POST['add_client'])){
 				$oneClient->formAddClient($conn,$db_basename);
 			}
+			if(isset($_POST['edit_client'])){
+				$id = mysqli_real_escape_string($conn,$_POST['id']);
+				$oneClient->formEditClient($oneClient,$id,$conn,$db_basename);
+			}
 
 
 	?>

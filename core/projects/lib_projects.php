@@ -222,13 +222,31 @@ class Projects{
 				              <label for="project"><span class="badge">Proyecto</span></label>
 				              <input type="text" class="form-control" id="project" name="project">
 				            </div>
-				            
-				            <div class="form-group">
-				              <label for="cliente"><span class="badge">Cliente</span></label>
-				              <input type="text" class="form-control" id="client" name="client">
-				            </div>';
 
-				    echo'<div class="form-group">
+				            <div class="form-group">
+			                <label for="client"><span class="badge">Cliente</span></label>
+			                <select class="form-control" id="client" name="client">
+			                <option value="" disabled selected>Seleccionar</option>';
+			                    
+			                    if($conn){
+			                    $query = "SELECT * FROM bp_clients";
+			                    mysqli_select_db($conn,$db_basename);
+			                    $res = mysqli_query($conn,$query);
+
+			                    if($res){
+			                        while ($valores = mysqli_fetch_array($res)){
+			                        	echo '<option value="'.$valores[razon_social].'">'.$valores[razon_social].'</option>';
+			                        	
+			                        }
+			                        }
+			                    }
+
+			                    //mysqli_close($conn);
+			                
+			      	echo '</select>
+			        </div>
+				            
+				           <div class="form-group">
 			                <label for="project_leader"><span class="badge">Project Leader</span></label>
 			                <select class="form-control" id="project_leader" name="project_leader">
 			                <option value="" disabled selected>Seleccionar</option>';
