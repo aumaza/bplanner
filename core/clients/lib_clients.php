@@ -232,6 +232,9 @@ class Clients{
     } // END OF METHOD
 
 
+    // FORMULARIOS
+	// ================================================================================================ //
+
     /*
     * FORMULARIO ALTA CLIENTE
     * @conn, @db_basename
@@ -318,10 +321,10 @@ class Clients{
 				          
 				           <footer class="container-fluid text-left">
 				            <label for="my_file"><span class="label label-default">LOGO Empresa</span></label>
-				            <input type="file" id="my_file" name="my_file">
+				            <input type="file" id="myfile" name="myfile">
 				          </footer><br>
 				                              
-				          <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Guardar</button>
+				          <button type="submit" class="btn btn-default btn-block" id="add_client"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Guardar</button>
 				    	</form> 
 				  	
 				  </div>
@@ -331,7 +334,130 @@ class Clients{
     } // END OF FUNCTION
 
 
+    // PERSISTENCIA
+	// ================================================================================================ //
 
+    /*
+    *	GUARDAR EN BASE DE DATOS REGISTRO DE NUEVLO CLIENTE 
+    *	@oneClient, @razon_social, @responsable, @direccion, @localidad, @provincia, @pais, @cod_postal, @telefono, @email, @cuil_cuit, @file, @conn, @db_basename
+    */
+    puclic function addClient($oneClient,$razon_social,$responsable,$direccion,$localidad,$provincia,$pais,$cod_postal,$telefono,$email,$cuil_cuit,$file,$conn,$db_basename){
+
+    	if ($conn) {
+
+			$targetDir = '../logos/';
+			$fileName  = $file;
+			//$fileName = basename($_FILES["file"]["name"]);
+			$dir            = opendir($targetDir);// SE ABRE EL DIECTORIO
+			$targetFilePath = $targetDir.$fileName;
+
+			$fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+
+			if (!empty($_FILES["myfile"]["name"])) {
+				// Allow certain file formats
+				$allowTypes = array('jpg','png');
+
+				if (in_array($fileType, $allowTypes)) {
+
+					// Upload file to server
+					if (move_uploaded_file($_FILES["myfile"]["tmp_name"], $targetFilePath)) {
+
+						closedir($dir);// SE CIERRA EL DIRECTORIO
+
+						mysqli_select_db($conn, $db_basename);
+
+						$sql = "INSERT INTO bp_clients ".
+						"(razon_social,
+                          responsable,
+                          direccion,
+                          localidad,
+                          provincia,
+                          pais,
+                          cod_postal,
+                          telefono,
+                          email,
+                          cuil_cuit,
+                          logo,
+                          file_path)".
+						"VALUES ".
+						"($oneClient->setRazonSocial('$razon_social'),
+						  $oneClient->setResponsable('$responsable'),
+						  $oneClient->setDireccion('$direccion'),
+						  $oneClient->setLocalidad('$localidad'),
+						  $oneClient->setPais('$pais'),
+						  $oneClient->setCodPostal('$cod_postal'),
+						  $oneClient->setTelefono('$teleono'),
+						  $oneClient->setEmail('$email'),
+						  $oneClient->setCuitCuil('$cuil_cuit'),
+						  $oneClient->setLogo('$file'),
+						  $oneClient->setFilePath('$targetFilePath'))";
+
+						$query = mysqli_query($conn, $sql);
+
+						if ($query) {
+							echo 1; // registro insertado correctamente
+							//$success = '[Se ha guardado de manera exitosa resitro en la tabla Representación Paritarias]';
+                			//mysqlSuccessLogs($success);
+							
+						} else {
+							echo -1; // hubo un problema al insertar el registro
+							//$myError = mysql_error($conn);
+				            //$error = '[Se ha producido el error: ' .$myError. ' al intentar guardar en la tabla Representación Paritarias]';
+				            //mysqlErrorLogs($error);
+						}
+					} else {
+						echo 3; // no se ha podido subir el archivo
+					}
+				} else {
+					echo 9; // solo se permiten archivos JPG, PNG
+				}
+			} else {
+						
+						mysqli_select_db($conn, $db_basename);
+
+						$sql = "INSERT INTO bp_clients ".
+						"(razon_social,
+                          responsable,
+                          direccion,
+                          localidad,
+                          provincia,
+                          pais,
+                          cod_postal,
+                          telefono,
+                          email,
+                          cuil_cuit
+                          )".
+						"VALUES ".
+						"($oneClient->setRazonSocial('$razon_social'),
+						  $oneClient->setResponsable('$responsable'),
+						  $oneClient->setDireccion('$direccion'),
+						  $oneClient->setLocalidad('$localidad'),
+						  $oneClient->setPais('$pais'),
+						  $oneClient->setCodPostal('$cod_postal'),
+						  $oneClient->setTelefono('$teleono'),
+						  $oneClient->setEmail('$email'),
+						  $oneClient->setCuitCuil('$cuil_cuit'))";
+
+						$query = mysqli_query($conn, $sql);
+
+						if ($query) {
+							echo 1; // registro insertado correctamente
+							//$success = '[Se ha guardado de manera exitosa resitro en la tabla Representación Paritarias]';
+                			//mysqlSuccessLogs($success);
+							
+						} else {
+							echo -1; // hubo un problema al insertar el registro
+							//$myError = mysql_error($conn);
+				            //$error = '[Se ha producido el error: ' .$myError. ' al intentar guardar en la tabla Representación Paritarias]';
+				            //mysqlErrorLogs($error);
+						}
+			}
+
+		} else {
+			echo 7; // no hay conexion
+		}
+
+    } // END OF FUNCTION
 
 } // END OF CLASS
 
