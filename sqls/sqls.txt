@@ -77,3 +77,22 @@ cuit_cuil varchar(11) not null,
 logo varchar(300),
 file_path varchar(300)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+# table bp_countries
+create table bp_countries(
+id int(11) auto_increment primary key,
+spanish_name varchar(100) not null,
+english_name varchar(100) not null,
+iso_2 varchar(2) not null,
+iso_3 varchar(3) not null,
+phone_prefix varchar(10) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ====================================================== #
+
+#subir csv paises
+load data local infile '/mnt/sda3/descargas/paises/paises.csv' 
+into table bp_countries fields terminated by ',' enclosed by '"' lines terminated by '\n' ignore 1 lines
+(spanish_name,english_name,iso_2,iso_3,phone_prefix);

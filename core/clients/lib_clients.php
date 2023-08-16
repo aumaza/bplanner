@@ -274,9 +274,27 @@ class Clients{
 				          </div>
 				          
 				          <div class="form-group">
-				            <label for="pais"><span class="label label-default">País</span></label>
-				            <input type="text" class="form-control" id="pais" name="pais">
-				          </div>
+			                <label for="pais"><span class="label label-default">País</span></label>
+			                <select class="form-control" id="pais" name="pais">
+			                <option value="" disabled selected>Seleccionar</option>';
+			                    
+			                    if($conn){
+			                    $query = "SELECT * FROM bp_countries order by spanish_name ASC";
+			                    mysqli_select_db($conn,$db_basename);
+			                    $res = mysqli_query($conn,$query);
+
+			                    if($res){
+			                        while ($valores = mysqli_fetch_array($res)){
+			                        	echo '<option value="'.$valores[iso_3].'">'.$valores[spanish_name].'</option>';
+			                        	
+			                        }
+			                        }
+			                    }
+
+			                    //mysqli_close($conn);
+			                
+			      	echo '</select>
+			        </div>
 				          
 				          <div class="form-group">
 				            <label for="cod_postal"><span class="label label-default">Código Postal</span></label>
@@ -298,10 +316,10 @@ class Clients{
 				            <input type="text" class="form-control" id="cuil_cuit" name="cuil_cuit">
 				          </div>
 				          
-				           <div class="form-group">
+				           <footer class="container-fluid text-left">
 				            <label for="my_file"><span class="label label-default">LOGO Empresa</span></label>
-				            <input type="file" class="form-control" id="my_file" name="my_file">
-				          </div>
+				            <input type="file" id="my_file" name="my_file">
+				          </footer><br>
 				                              
 				          <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Guardar</button>
 				    	</form> 
