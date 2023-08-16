@@ -3,11 +3,16 @@
 /*
 ** CARGADOR DE MAIN NAV-BAR
 */
-function mainNavBar($nombre,$avatar){
+function mainNavBar($nombre,$avatar,$conn,$db_basename){
 	
 	$find = 'c';
 	$pos = strpos($avatar, $find);
 
+	mysqli_select_db($conn,$db_basename);
+	$sql = "SELECT * FROM bp_usuarios where nombre = '$nombre' and find_in_set('Sys_Admin', functions)>0";
+	$query = mysqli_query($conn,$sql);
+	$rows = mysqli_num_rows($query);
+    
 	
 	switch($pos){
 
@@ -38,7 +43,7 @@ function mainNavBar($nombre,$avatar){
 							<li><button type="submit" class="btn btn-default btn-block" name="calcular_horas_mes">
 								<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> Calcular Horas Mes</button></li>';
 
-							    if($nombre === 'Administrador'){
+							    if($rows > 0){
 							       echo '<li><button type="submit" class="btn btn-default btn-block" name="users"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Usuarios</button></li>
 
 							       	  <li><button type="submit" class="btn btn-default btn-block" name="clients"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Clientes</button></li>';

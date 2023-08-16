@@ -27,7 +27,7 @@ $(document).ready(function(){
                 if(r == 1){
                     var mensaje = `<br><div class="alert alert-success alert-dismissible">
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <p align=center><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Bienvenido, aguarde un instante...</p></div>`;
+                                        <p align=center><img src="core/img/sand-clock-dribbble.gif"  class="img-reponsive img-rounded" style="width:10%"> Bienvenido, aguarde un instante...</p></div>`;
                     document.getElementById('messageLogIn').innerHTML = mensaje;
                      $('#user').val('');
                      $('#pwd').val('');

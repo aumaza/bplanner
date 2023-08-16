@@ -24,6 +24,7 @@
 	                $nombre = $row['nombre'];
 	                $user_id = $row['id'];
 	                $avatar = $row['avatar'];
+	                
 	            }
            	}else{
            		echo 'CONNECTION FAILURE';
@@ -62,7 +63,7 @@
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="50" style = "background: #839192;" onload="nobackbutton();">
 
-<?php mainNavBar($nombre,$avatar); ?>
+<?php mainNavBar($nombre,$avatar,$conn,$db_basename); ?>
   
 <!-- main space -->
 
@@ -82,7 +83,7 @@
 
 		// ========================================================== //
 		// USERS SPACE //
-
+			
 			$oneUser = new User();
 
 			if(isset($_POST['users'])){
