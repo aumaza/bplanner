@@ -30,12 +30,13 @@ read nombre
 if [ -z "$commit" ]; then
     echo "Debe ingresar el commit..."
 else
-    git add *
-    git commit -m "$commit [ $fecha ]"
-    git push -u origin "$branch"
     sed -i "$ a\| ======================================================================================== |" "$CONFIG_BACKTRACK"
     sed -i "$ a\| USER=$nombre" "$CONFIG_BACKTRACK"
     sed -i "$ a\| DATE=$fecha" "$CONFIG_BACKTRACK"
     sed -i "$ a\| COMMIT=$commit" "$CONFIG_BACKTRACK"
     sed -i "$ a\| ======================================================================================== |" "$CONFIG_BACKTRACK"
+    git add *
+    git commit -m "$commit [ $fecha ]"
+    git push -u origin "$branch"
+
 fi
