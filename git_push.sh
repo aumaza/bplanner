@@ -33,9 +33,9 @@ else
     git add *
     git commit -m "$commit [ $fecha ]"
     git push -u origin "$branch"
-    sed -i "$ a\| ======================================================================================== |" "$CONFIG_COMMIT"
+    sed -i "$ a\| ======================================================================================== |" "$CONFIG_BACKTRACK"
     sed -i "$ a\| USER=$nombre" "$CONFIG_BACKTRACK"
     sed -i "$ a\| DATE=$fecha" "$CONFIG_BACKTRACK"
-    sed -i "$ a\| COMMIT=$COMMIT" "$CONFIG_BACKTRACK"
-    sed -i "$ a\| ======================================================================================== |" "$CONFIG_COMMIT"
+    sed -i "$ a\| COMMIT=$commit" "$CONFIG_BACKTRACK"
+    sed -i "$ a\| ======================================================================================== |" "$CONFIG_BACKTRACK"
 fi
