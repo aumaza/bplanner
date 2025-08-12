@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 fecha=`date +%d-%m-%Y`
-hora_actual=`date +%H-%M-%S`
+hora_actual=`date +%H:%M:%S`
 CONFIG_BACKTRACK="backtrack/backtrack.bp"
 
 echo "==============================================================="
