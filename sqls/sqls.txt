@@ -1,3 +1,16 @@
+#tabla bp_usuarios
+create table bp_usuarios(
+id int(11) auto_increment primary key,
+nombre varchar(100) binary not null,
+user varchar(100) binary not null,
+password varchar(74) binary not null,
+email varchar(100) binary not null,
+celular varchar(15) not null,
+functions set('Developer','Sys_Admin','Functional','Tester','Designer','Data_Analitics') not null,
+avatar varchar(100),
+role int(1) not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 #tabla bp_ticket_track
 create table bp_ticket_track(
 id int(11) auto_increment primary key,
@@ -12,7 +25,7 @@ files_path varchar(100)
 # ====================================================== #
 
 # table bp_projects
-create table bp_projects(
+create table if not exists bp_projects(
 id int(11) auto_increment primary key,
 project varchar(300) not null,
 client varchar(300) not null,
@@ -26,7 +39,7 @@ status varchar(1) not null
 # ====================================================== #
 
 # table bp_teams
-create table bp_teams(
+create table if not exists bp_teams(
 id int(11) auto_increment primary key,
 id_project int(11) not null,
 member varchar(150) not null,
@@ -36,7 +49,7 @@ function varchar(150) not null
 # ====================================================== #
 
 # table bp_hours
-create table bp_hours(
+create table if not exists bp_hours(
 id int(11) auto_increment primary key,
 name varchar(150) not null,
 fecha date not null,
@@ -49,7 +62,7 @@ ticket_number varchar(4) not null
 # ====================================================== #
 
 #table bp_pay_hours
-create table bp_pay_hours(
+create table if not exists bp_pay_hours(
 id int(11) auto_increment primary key,
 name varchar(150) not null,
 cant_total_hours varchar(4) not null,
@@ -62,7 +75,7 @@ pay_status varchar(1) not null
 # ====================================================== #
 
 # table bp_clients
-create table bp_clients(
+create table if not exists bp_clients(
 id int(11) auto_increment primary key,
 razon_social varchar(200) not null,
 responsable varchar(100) not null,
@@ -81,7 +94,7 @@ file_path varchar(300)
 # ====================================================== #
 
 # table bp_countries
-create table bp_countries(
+create table if not exists bp_countries(
 id int(11) auto_increment primary key,
 spanish_name varchar(100) not null,
 english_name varchar(100) not null,
@@ -93,6 +106,12 @@ phone_prefix varchar(10) not null
 # ====================================================== #
 
 #subir csv paises
-load data local infile '/mnt/sda3/descargas/paises/paises.csv' 
+load data local infile '/mnt/storage/descargas/paises/paises.csv'
 into table bp_countries fields terminated by ',' enclosed by '"' lines terminated by '\n' ignore 1 lines
 (spanish_name,english_name,iso_2,iso_3,phone_prefix);
+
+# ===================================================== #
+show tables;
+show columns from bp_usuarios;
+select * from bp_usuarios;
+drop table bp_usuarios;
